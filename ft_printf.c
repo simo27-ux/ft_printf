@@ -1,38 +1,50 @@
-int	ft_printf(const char *format, ...)
+#include "ft_printf.h"
+
+void	ft_format(va_list va, char *str, size_t *counter)
 {
-	int	i;
-	int	count;
-
-	i = 0;
-	count = 0;
-	while (format)
+	if (*str == 'c')
+		ft_putchar_pf(va_arg(va, int), counter);
+	else if (*str == 's')
+		ft_putstr_pf(va_arg(va, char *), counter);
+	else if (*str == 'p')
+		ft_putptr_pf(va_arg(va, void *), counter);
+	else if (*str == 'i' || *str == 'd')
+		ft_putnbr_pf(va_arg(va, int), counter);
+	else if (*str == 'u')
+		ft_putuint_pf(va_arg(va, unsigned int), counter);
+	else if (*str == 'x' || *str == 'X')
 	{
-		if (format[i] == '%')
+		if (*str == 'x')
+			ft_puthex_pf(va_arg(va, unsigned int),
+				counter, HEX_LOW_BASE);
+		else
+			ft_puthex_pf(va_arg(va, unsigned int),
+				counter, HEX_UPP_BASE);
+	}
+	else if (*str == '%')
+		ft_putchar_pf(*str, counter);
+}
+
+int	ft_printf(char const *str, ...)
+{
+	va_list	va;
+	size_t	counter;
+
+	if (!str)
+		return (0);
+	counter = 0;
+	va_start(va, str);
+	while (*str)
+	{
+		if (*str == '%')
 		{
-			if (format[i + 1] == 'c')
-
-			if (format[i + 1] == 's')
-
-			if (format[i + 1] == 'p')
-
-			if (format[i + 1] == 'd')
-
-			if (format[i + 1] == 'i')
-
-			if (format[i + 1] == 'u')
-
-			if (format[i + 1] == 'x')
-			
-			if (format[i + 1] == 'X')
-
-			if (format[i + 1] == '%')
-			
+			str++;
+			ft_format(va, (char *)str, &counter);
 		}
 		else
-		{
-			write(1, &format[i], 1);
-			i++;
-		}
-		count++;
+			ft_putchar_pf(*str, &counter);
+		str++;
 	}
+	va_end(va);
+	return (counter);
 }
